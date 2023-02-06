@@ -18,7 +18,7 @@ air
 ```
 
 ### DATABASE
-- Utilizamos el paquete gorm y tambien el driver de la respectiva bdd que vamos a usar en este caso postgreSQL para GO
+- Utilizamos el paquete gorm y tambien el driver de la respectiva bdd que vamos a usar en este caso postgreSQL para GO [Documentacion Gorm](https://gorm.io/docs/)
 ```
 go get -u gorm.io/gorm
 ```
@@ -40,3 +40,27 @@ docker run --name mypostgres -p 5432:5432 -e POSTGRES_PASSWORD=sistemas -e POSTG
 ```
 docker ps 
 ```
+- Ahora debemos  ejecutar el contenedor de la bdd de esta manera -it (iteractiva)
+```
+docker exec -it mypostgres bash
+```
+- Para conectarnos a postgreSQL
+```
+psql -U ivan --password 
+```
+- El siguiente comando para crear una bdd con el nombre que le querramos poner en este caso.
+```
+CREATE DATABASE ;
+
+### Comandos de postgreSQL
+- Para ver tablas y sus relaciones
+```
+\d
+```
+- Para ver todas las base de datos creadas
+```
+\l
+```
+
+
+
