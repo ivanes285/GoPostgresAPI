@@ -48,11 +48,12 @@ docker exec -it mypostgres bash
 ```
 psql -U ivan --password 
 ```
-- El siguiente comando para crear una bdd con el nombre que le querramos poner en este caso.
-```
-CREATE DATABASE ;
-
 ### Comandos de postgreSQL
+
+- El siguiente comando para crear una bdd con el nombre que le querramos poner en este caso elegi "gorm".
+```
+CREATE DATABASE gorm;
+```
 - Para ver tablas y sus relaciones
 ```
 \d
@@ -60,6 +61,10 @@ CREATE DATABASE ;
 - Para ver todas las base de datos creadas
 ```
 \l
+```
+- Para conectarnos ejecutamos el comando con el nombre de la bdd
+```
+\c gorm
 ```
 
 
