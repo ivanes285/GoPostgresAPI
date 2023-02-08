@@ -54,7 +54,7 @@ psql -U ivan --password
 ```
 CREATE DATABASE gorm;
 ```
-- Para ver tablas y sus relaciones
+- Para ver tablas y sus relaciones , de igual manera podemos ver los campos de cada tabla
 ```
 \d
 ```
