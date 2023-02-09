@@ -91,6 +91,7 @@ func getUserById(c *fiber.Ctx) error {
 	id := c.Params("id")
     
 	db.DB.Find(&userById, id)
+	db.DB.Model(&userById).Association("Tasks").Find(&userById.Tasks) // aqui relacionamos la tabla de usuarios con la tabla de tareas y obtenemos las tareas de cada usuario
 	return c.Status(200).JSON(fiber.Map{
 		"user": userById,
 	})
