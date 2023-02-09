@@ -68,4 +68,22 @@ CREATE DATABASE gorm;
 ```
 
 
+ ### Preview
+
+
+<p align="center">
+    <img src="./assets/01.png" />
+<p/>
+
+
+<p align="center">
+    <img src="./assets/02.png" />
+<p/>
+
+<p align="center">
+    <img src="./assets/03.png" />
+<p/>
+
+
+
 
