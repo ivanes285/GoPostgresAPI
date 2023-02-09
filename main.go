@@ -50,6 +50,7 @@ func run() error {
 
 	//Routes
 	routes.AddUsersGroup(app)
+	routes.AddTasksGroup(app)
 
 	app.Listen(":3000")
 
