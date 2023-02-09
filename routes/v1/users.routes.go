@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"fmt"
+
 	"reflect"
 	"strings"
 
@@ -22,29 +22,10 @@ func AddUsersGroup(app *fiber.App) {
 
 // GET ALL USERS
 func getUsers(c *fiber.Ctx) error {
-
-	// coll := db.GetDBCollection("users") // obtenemos la coleccion de la base de datos goreactmongo que se encuentra en el paquete db
-
-	// var users []models.User                          //creamos un slice(array de tamño dinamico) de tipo User
-	// results, err := coll.Find(c.Context(), bson.M{}) //retorna primero en formato bson
-	// if err != nil {
-	// 	return c.Status(400).JSON(fiber.Map{
-	// 		"message": err.Error()},
-	// 	)
-	// }
-
-	// if err = results.All(c.Context(), &users); // aqui recien estamos asignando el resultado a la variable users que es un slice de tipo User
-	// err != nil {
-	// 	return c.Status(400).JSON(fiber.Map{
-	// 		"message": "Could not find users"},
-	// 	)
-	// }
-
-	// return c.Status(200).JSON(fiber.Map{
-	// 	"users": users,
-	// })
+     var users []models.User // creamos una variable de tipo User 
+	 db.DB.Find(&users) // aqui se obtienen todos los usuarios de la BDD postgreSQL y se almacenan en la variable users
 	return c.Status(200).JSON(fiber.Map{
-		"users": "users",
+		"users": users,
 	})
 }
 
@@ -79,16 +60,18 @@ func createUser(c *fiber.Ctx) error {
 	}
 
 	result:= db.DB.Create(&user) // aqui se crea el usuario en la BDD postgreSQL 
+	
 	err := result.Error
 	var message string
 	if err != nil {
-		code:= reflect.ValueOf(err).Elem().FieldByName("Code").String()
-		detail:= reflect.ValueOf(err).Elem().FieldByName("Detail").String()
+		//?: reflect permite acceder a los campos de una estructura y obtener su valor
+		code:= reflect.ValueOf(err).Elem().FieldByName("Code").String()  // aqui se obtiene el codigo de error de la BDD
+		detail:= reflect.ValueOf(err).Elem().FieldByName("Detail").String() // aqui se obtiene el detalle del error de la BDD
 	    td:= strings.Split(detail,"=")
 		if code == "23505" {
 			 message = "Campo Repetido"
 		}
-		fmt.Println("typo de DATO",reflect.TypeOf(err))
+	
 		return c.Status(400).JSON(fiber.Map{
 			"messageError":message,
 		     "error":td[1],
@@ -97,132 +80,115 @@ func createUser(c *fiber.Ctx) error {
 	}
 
 	return c.Status(200).JSON(fiber.Map{
-		"RowsAffected": result.RowsAffected ,
-		"user": user,
+		"message": user,
 	
-
 	})
 }
 
 // GET USER BY ID
 func getUserById(c *fiber.Ctx) error {
-	// coll := db.GetDBCollection("users")
-
-	// // find the user by id
-	// id := c.Params("id") //obtenemos el id del parametro
-	// if id == "" {
-	// 	return c.Status(400).JSON(fiber.Map{
-	// 		"error": "id is required",
-	// 	})
-	// }
-
-	// objectId, err := primitive.ObjectIDFromHex(id) //convertimos el id a un objeto de tipo ObjectID
-	// if err != nil {
-	// 	return c.Status(400).JSON(fiber.Map{
-	// 		"error": "invalid id",
-	// 	})
-	// }
-
-	// user := models.User{}
-
-	// err = coll.FindOne(c.Context(), bson.M{"_id": objectId}).Decode(&user)
-	// if err != nil {
-	// 	return c.Status(500).JSON(fiber.Map{
-	// 		"error": "Could not find user",
-	// 	})
-	// }
-
-	// return c.Status(200).JSON(fiber.Map{"user": user})
+   var userById models.User
+	id := c.Params("id")
+    
+	db.DB.Find(&userById, id)
 	return c.Status(200).JSON(fiber.Map{
-		"users": "User by id",
+		"user": userById,
 	})
 }
 
 func updateUser(c *fiber.Ctx) error {
-	// 	// validate the body
-	// 	b := new(models.User)
-	// 	if err := c.BodyParser(b); err != nil {
-	// 		return c.Status(400).JSON(fiber.Map{
-	// 			"error": "Invalid body",
-	// 		})
-	// 	}
 
-	// 	// get the id
-	// 	id := c.Params("id")
-	// 	if id == "" {
-	// 		return c.Status(400).JSON(fiber.Map{
-	// 			"error": "id is required",
-	// 		})
-	// 	}
-	// 	objectId, err := primitive.ObjectIDFromHex(id)
-	// 	if err != nil {
-	// 		return c.Status(400).JSON(fiber.Map{
-	// 			"error": "invalid id",
-	// 		})
-	// 	}
+	var userUpdate models.User
+	var	user models.User 
 
-	// 	// update the user
-	// 	coll := db.GetDBCollection("users")
-	// 	result, err := coll.UpdateOne(c.Context(), bson.M{"_id": objectId}, bson.M{"$set": b})
-	// 	if err != nil {
-	// 		return c.Status(500).JSON(fiber.Map{
-	// 			"error":   "Failed to update book",
-	// 			"message": err.Error(),
-	// 		})
-	// 	}
-	// 	message :="User update successfully"
-	// 	status := 200
+	id := c.Params("id")
 
-	//    if result.ModifiedCount == 0 {
-	// 	   message = "User not found or already updated"
-	// 	   status = 404
-	//    }
-	// 	// return the user
-	// 	return c.Status(status).JSON(fiber.Map{
-	// 		"message": message,
-	// 	})
+	if err := c.BodyParser(&user);	err != nil {
+		return c.Status(400).JSON(fiber.Map{
+			"message": "An error has occurred with data,Invalid body"},
+		)
+	}
+	// VALIDATE fields USER
+	if user.FirstName == "" || user.FirstName == " " {
+		return c.Status(400).JSON(fiber.Map{
+			"message": "FirstName is required"},
+		)
+	}
+	if user.LastName == "" || user.LastName == " " {
+		return c.Status(400).JSON(fiber.Map{
+			"message": "LastName is required"},
+		)
+	}
+	if user.Email == "" || user.Email == " " {
+		return c.Status(400).JSON(fiber.Map{
+			"message": "Email is required"},
+		)
+	}
+
+	db.DB.First(&userUpdate, id)
+	 
+     userUpdate.FirstName= user.FirstName
+	 userUpdate.LastName= user.LastName
+	 userUpdate.Email= user.Email
+
+	result:=db.DB.Save(&userUpdate)
+
+
+	err := result.Error
+	var messageErr string
+	if err != nil {
+		//?: reflect permite acceder a los campos de una estructura y obtener su valor
+		code:= reflect.ValueOf(err).Elem().FieldByName("Code").String()  // aqui se obtiene el codigo de error de la BDD
+		detail:= reflect.ValueOf(err).Elem().FieldByName("Detail").String() // aqui se obtiene el detalle del error de la BDD
+	    td:= strings.Split(detail,"=")
+		campo:=strings.Split(td[1], " ")
+	
+		if code == "23505" {
+			messageErr= "Ya existe un usuario con este dato "+campo[0]+" intente con otro"
+			
+		}
+
+		return c.Status(400).JSON(fiber.Map{
+			"messageError":messageErr, 
+		},
+		)
+	}
+
+	rowsAffected := result.RowsAffected
+	var message string
+	if rowsAffected == 0 {
+		message = "The user does not exist "
+	} else {
+		message = "User updated"
+	}
 	return c.Status(200).JSON(fiber.Map{
-		"users": "User updated",
+		"users": message,
+		"data": userUpdate,
 	})
 }
 
 func deleteUser(c *fiber.Ctx) error {
-	// // get the id
-	// id := c.Params("id")
-	// if id == "" {
-	// 	return c.Status(400).JSON(fiber.Map{
-	// 		"error": "id is required",
-	// 	})
-	// }
-	// objectId, err := primitive.ObjectIDFromHex(id)
-	// if err != nil {
-	// 	return c.Status(400).JSON(fiber.Map{
-	// 		"error": "invalid id",
-	// 	})
-	// }
+	var userDelete models.User
+	id := c.Params("id")
+	// result:=db.DB.Delete(&userDelete, id)  //?Delete es un metodo que elimina un registro de la BDD pero solo visualmente(temporal), no se elimina en la BDD
+    result:= db.DB.Unscoped().Delete(&userDelete, id) //? Unscoped es un metodo que elimina un registro de la BDD de forma permanente
+	
+	err := result.Error
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{
+			"message": " An error has occurred "},
+		)
+	}
 
-	// // delete the user
-	// coll := db.GetDBCollection("users")
-	// result, err := coll.DeleteOne(c.Context(), bson.M{"_id": objectId})
-	// if err != nil {
-	// 	return c.Status(500).JSON(fiber.Map{
-	// 		"error":   "Could not delete user.Failed to delete user",
-	// 		"message": err.Error(),
-	// 	})
-	// }
-
-	// message := "User deleted successfully"
-	// status := 200
-
-	// if result.DeletedCount == 0 {
-	// 	message = "User not found or already deleted"
-	// 	status = 404
-	// }
-
-	// return c.Status(status).JSON(fiber.Map{
-	// 	"message": message,
-	// })
+	rowsAffected := result.RowsAffected
+	var message string
+	if rowsAffected == 0 {
+		message = "The user does not exist or has already been deleted"
+	} else {
+		message = "User deleted"
+	}
 	return c.Status(200).JSON(fiber.Map{
-		"users": "User deleted",
+		"message": message,
+		
 	})
 }
