@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	// "log"
+    "log"
 	"os"
 
 	"github.com/gofiber/fiber/v2"
@@ -12,7 +12,7 @@ import (
 	"github.com/ivanes285/GoPostgresAPI/db"
 	"github.com/ivanes285/GoPostgresAPI/models"
 	"github.com/ivanes285/GoPostgresAPI/routes/v1"
-	// "github.com/joho/godotenv"
+	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -25,10 +25,10 @@ func main() {
 
 func run() error {
 
-	// err := godotenv.Load()
-	// if err != nil {
-	// 	log.Fatal("Error loading .env file")
-	// }
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 
 	//?Database connection
 	db.DBConnection()
