@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -51,8 +53,16 @@ func run() error {
 	//Routes
 	routes.AddUsersGroup(app)
 	routes.AddTasksGroup(app)
+	
 
-	app.Listen(":3000")
+	// PORT
+	PORT := os.Getenv("PORT") // Obtenemos el puerto de la variable de entorno PORT
+	if PORT == "" {
+		PORT = "4000"
+	}
+
+	app.Listen(":" + PORT) // Iniciamos el servidor y si hay un error lo mostramos en la consola
+	fmt.Println("Server is running on port", PORT)
 
 	return nil // retornamos nil porque no hay error
 
