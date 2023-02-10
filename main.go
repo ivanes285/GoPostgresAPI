@@ -18,7 +18,7 @@ import (
 func main() {
 	err := run()    // ejecutamos la función run y la asignamos a la variable err
 	if err != nil { // si err es diferente de nil entonces mostramos el error en la consola
-		log.Fatal(err)
+		panic(err)
 	}
 
 }
@@ -46,7 +46,7 @@ func run() error {
 	app.Use(cors.New(cors.Config{ // Configuración de CORS para permitir el acceso a la API desde cualquier origen
 		AllowOrigins:     "*",
 		AllowMethods:     "GET,POST,HEAD,PUT,DELETE,PATCH,OPTIONS",
-		AllowHeaders:     "Origin, Content-Type, Accept, Content-Length, Accept-Language, Accept-Encoding, Connection,              Access-Control-Allow-Origin",
+		AllowHeaders: "Origin, Content-Type, Accept, Content-Length, Accept-Language, Accept-Encoding, Connection,Access-Control-Allow-Origin",
 		AllowCredentials: true,
 	}))
 
