@@ -68,6 +68,13 @@ CREATE DATABASE gorm;
 ```
 
 
+### DEPLOY
+- Para hacer el deploy de nuestra aplicacion en railway utilizando como bdd postgreSQL hicimos uso de una bdd en la nube en el sevicio de 
+ AWS RDS , para esto debemos crear una instancia de la bdd en la nube y posterior a eso crear un usuario y una password para poder conectarnos a la bdd.
+- Una vez creada la bdd no olvidar configurar la seguridad VPC para establecer el acceso a la bdd desde cualquier ip o desde nuestra ip especifica.
+- Una vez creada la bdd postgres necesitamos el endpoint de la bdd para poder conectarnos a ella y tambien la password y el user que creamos anteriormente.
+- Para hacer el deploy de nuestra aplicacion es tan facil como tener nuestro proyecto en github, seleccionar el repositorio y agregar las variables de entorno, en este cado DSN que significa data source name y es la cadena de conexion a la bdd.
+
  ### Preview
 
 
