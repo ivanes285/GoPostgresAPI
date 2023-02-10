@@ -74,6 +74,7 @@ CREATE DATABASE gorm;
 - Una vez creada la bdd no olvidar configurar la seguridad VPC para establecer el acceso a la bdd desde cualquier ip o desde nuestra ip especifica.
 - Una vez creada la bdd postgres necesitamos el endpoint de la bdd para poder conectarnos a ella y tambien la password y el user que creamos anteriormente.
 - Para hacer el deploy de nuestra aplicacion es tan facil como tener nuestro proyecto en github, seleccionar el repositorio y agregar las variables de entorno, en este cado DSN que significa data source name y es la cadena de conexion a la bdd.
+- [Documentacion Gorm](https://gorm.io/docs/)
 - Puedes probar la api [Link de la API](https://gopostgresapi-production.up.railway.app/api/v1/users)
 
  ### Preview
